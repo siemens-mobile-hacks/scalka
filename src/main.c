@@ -1,14 +1,13 @@
-#include <stdio.h>
 #include <swilib.h>
+#include <math.h>
+#include <stdio.h>
 #include <setjmp.h>
 #include <stdlib.h>
 #include <string.h>
-#include "edit_settings.h"
-#include "calc_object.h"
-
-#include <math.h>
-
 #include "mainmenu.h"
+#include "settings.h"
+#include "calc_object.h"
+#include "conf_loader.h"
 
 //#define PI_CONST 3.141592653589793238
 #define PI_CONST 3.1415926535897932384626433832795
@@ -54,22 +53,22 @@ const char *const keydesc[4][12]=
     "4"    ,"5"   ,"6",
     "7"    ,"8"   ,"9",
     "."    ,"0"   ,"#"},
-    
+
   { "sin"  ,"*"   ,"/",
     "cos"  ,"+"   ,"-",
     "tan"  ,"("   ,")",
     "^2"   ,"sqrt"   ,"#"},
-  
+
   { "asin" ,"ln"  ,"log",
     "acos" ,"e^"  ,"-",
     "atan" ,"10^" ,"pi",
     "^"    ,""    ,"#"},
-  
+
   { "sh"   ,"ash" ,"ANS",
     "ch"   ,"ach" ,"abs",
     "th"   ,"ath" ,"!",
     "X"    ,"Y"   ,"#"}
-  
+
 };
 
 int GetOperIndexByKey(int key){
@@ -88,8 +87,8 @@ void insert_operation(int op)
       operation[i+1]=operation[i];
     }
     operation[op_pos++]=op;
-    op_len++;    
-  } 
+    op_len++;
+  }
 }
 
 void remove_all_operation(void)
@@ -119,12 +118,12 @@ void remove_operation(void)
       }
       op_pos--;
       op_len--;
-    }    
-  }  
+    }
+  }
 }
 
 int getXXXXwidth(int font)
-{ 
+{
   return (GetSymbolWidth('X',font)*4);
 }
 
@@ -145,17 +144,17 @@ inline int IsMathFunc(int c)
           c==OP_TAN ||
           c==OP_ASIN ||
           c==OP_LN ||
-          c==OP_LOG || 
+          c==OP_LOG ||
           c==OP_ACOS ||
-          c==OP_ATAN || 
+          c==OP_ATAN ||
           c==OP_SH ||
-          c==OP_ASH || 
-          c==OP_CH || 
+          c==OP_ASH ||
+          c==OP_CH ||
           c==OP_ACH ||
           c==OP_ABS ||
           c==OP_TH ||
           c==OP_ATH ||
-          c==OP_FAC);     
+          c==OP_FAC);
 }
 
 int IsPowFunc(int c)
@@ -169,15 +168,15 @@ int PRIOR(int a)
   if (IsPowFunc(a)) return 5;
   if (IsMathFunc(a)) return 4;
   switch(a)
-  {    
+  {
   case OP_MULT:   // *
   case OP_DIV:   // /
     return 3;
-    
+
   case OP_PLUS:  // +
   case OP_MINUS:  // -
     return 2;
-    
+
   case LEFTBRACKET:  // (
          return 1;
   }
@@ -188,7 +187,7 @@ int PRIOR(int a)
 typedef struct {
   jmp_buf jmp;
   double *stack;
-  int sp; 
+  int sp;
 }DSTACK;
 
 void PushDoubleStack(DSTACK *dstack, double value)
@@ -203,13 +202,13 @@ double PopDoubleStack(DSTACK *dstack)
   double a=0;
   if (dstack->sp)
   {
-    a=dstack->stack[--dstack->sp];    
+    a=dstack->stack[--dstack->sp];
   }
   else
   {
     longjmp(dstack->jmp, 1);
   }
-  return a;  
+  return a;
 }
 
 void ConstructDStackStruct(DSTACK *dstack)
@@ -329,7 +328,7 @@ void ParseOperation(DSTACK *dstack, int operation)
     b=PopDoubleStack(dstack);
     ans=b+a;
     PushDoubleStack(dstack, ans);
-    break;    
+    break;
   case OP_MINUS:    // -
     a=PopDoubleStack(dstack);
     b=PopDoubleStack(dstack);
@@ -531,7 +530,7 @@ L_ERROR:
   DestructDStackStruct(&dstack);
   d_answer=ans;
 }
-  
+
 void MainOnRedraw(CHTYPE_GUI *data)
 {
   unsigned int scr_w=ScreenW();
@@ -542,29 +541,29 @@ void MainOnRedraw(CHTYPE_GUI *data)
   unsigned int start_x;
   unsigned int XXXXwidth=getXXXXwidth(FONT_SMALL);
   unsigned int Ysize=GetFontYSIZE(FONT_SMALL);
-  
+
   need_height=Ysize*4+5*2*3+5*2;
   need_width=XXXXwidth*3+5*2*2+5*2;
-  
+
   start_y=need_height<scr_h?(scr_h-need_height)>>1:0;
   start_x=need_width<scr_w?(scr_w-need_width)>>1:0;
-  
+
   DrawRoundedFrame(start_x,start_y,start_x+need_width,start_y+need_height,3,3,0,
                    GetPaletteAdrByColorIndex(0),GetPaletteAdrByColorIndex(20));
-  
+
   for (int y=0; y<4; y++)
   {
     for (int x=0; x<3; x++)
     {
       unsigned int x_frame=start_x+XXXXwidth*x+5*2*x;
       unsigned int y_frame=start_y+Ysize*y+5*2*y;
-      
-      
+
+
       wsprintf(data->ws1,percent_t,keydesc[data->state][y*3+x]);
-      
+
       unsigned int str_width=Get_WS_width(data->ws1,FONT_SMALL);
       unsigned int x_str=x_frame+((XXXXwidth-str_width)>>1)+5;
-      
+
       DrawRoundedFrame(x_frame,y_frame,x_frame+XXXXwidth+5*2,y_frame+Ysize+5*2,3,3,0,
                        GetPaletteAdrByColorIndex(0),GetPaletteAdrByColorIndex(20));
       DrawString(data->ws1,x_str,y_frame+5,x_str+str_width,y_frame+Ysize+5,
@@ -671,7 +670,7 @@ int ed1_onkey(GUI *data, GUI_MSG *msg)
   int focus;
   int i;
   i=msg->gbsmsg->submess;
-  
+
   focus=EDIT_GetFocus(data);
   if (msg->keys==0xFFF)
   {
@@ -684,7 +683,7 @@ int ed1_onkey(GUI *data, GUI_MSG *msg)
     {
       remove_operation();
       if (calc_set.auto_recalc) req_recalc=1;
-      return (-1);    
+      return (-1);
     }
     if (msg->gbsmsg->msg==KEY_DOWN)
     {
@@ -704,9 +703,9 @@ int ed1_onkey(GUI *data, GUI_MSG *msg)
             return(-1);
           }
         }
-      } 
+      }
     }
-    
+
     if (msg->gbsmsg->msg==KEY_DOWN || msg->gbsmsg->msg==LONG_PRESS)
     {
       if (i==LEFT_BUTTON)
@@ -721,10 +720,10 @@ int ed1_onkey(GUI *data, GUI_MSG *msg)
       }
     }
   }
-  
+
   if (msg->gbsmsg->msg==KEY_DOWN)
   {
-    if (i==GREEN_BUTTON) 
+    if (i==GREEN_BUTTON)
     {
       req_recalc=1;
       return(-1);
@@ -778,10 +777,10 @@ void ed1_ghook(GUI *data, int cmd)
     if (req_recalc)
     {
       char revpn[256];
-      req_recalc=0;
+      req_recalc = 0;
       calc_answer();
       sprintf(revpn, calc_set.fmt, d_answer);
-      wsprintf(ews, revpn);
+      wsprintf(ews, "%s", revpn);
       EDIT_SetTextToEditControl(data,2,ews);
     }
   }
@@ -846,52 +845,54 @@ int create_ed(void)
 
   PrepareEditControl(&ec);
   eq=AllocEQueue(ma,mfree_adr());
-  
+
   wsprintf(ews,percent_t,"Answer:");
   ConstructEditControl(&ec,ECT_HEADER,0x40,ews,ews->wsbody[0]);
   AddEditControlToEditQend(eq,&ec,ma);  // 1
-  
+
   ConstructEditControl(&ec,ECT_NORMAL_TEXT,0x40,0,128);
-  AddEditControlToEditQend(eq,&ec,ma);  // 2   Ответ 
-  
+  AddEditControlToEditQend(eq,&ec,ma);  // 2   Ответ
+
   wsprintf(ews,percent_t,"----------");
   ConstructEditControl(&ec,ECT_HEADER,0x40,ews,ews->wsbody[0]);
   AddEditControlToEditQend(eq,&ec,ma);   // 3
 
   ConstructEditControl(&ec,ECT_NORMAL_TEXT,0x40,0,128);
-  AddEditControlToEditQend(eq,&ec,ma);  // 4 
+  AddEditControlToEditQend(eq,&ec,ma);  // 4
 
   return CreateInputTextDialog(&ed1_desc,&ed1_hdr,eq,1,0);
 }
 
-int maincsm_onmessage(CSM_RAM *data, GBS_MSG *msg)
-{
-  MAIN_CSM *csm=(MAIN_CSM*)data;
-  if (msg->msg==MSG_GUI_DESTROYED)
-  {
-    if ((int)msg->data0==csm->gui_id)
-    {
-      csm->csm.state=-3;
-    }
-    if ((int)msg->data0==chtype_gui_id)
-    {
-      chtype_gui_id=0;
-    }
-  }
-  return(1);
+int maincsm_onmessage(CSM_RAM *data, GBS_MSG *msg) {
+    extern char CFG_PATH[];
+
+    MAIN_CSM *csm=(MAIN_CSM*)data;
+    if (msg->msg==MSG_GUI_DESTROYED) {
+        if ((int)msg->data0==csm->gui_id) {
+           csm->csm.state=-3;
+        }
+        if ((int)msg->data0==chtype_gui_id) {
+          chtype_gui_id = 0;
+        }
+    } else if (msg->msg == MSG_RECONFIGURE_REQ) {
+        if (strcmp(CFG_PATH, msg->data0) == 0) {
+          InitConfig();
+          InitSettings();
+          ShowMSG(1, (int)"SCalka config updated!");
+        }
+      }
+    return 1 ;
 }
 
 void maincsm_oncreate(CSM_RAM *data)
 {
   MAIN_CSM *csm=(MAIN_CSM*)data;
   ews=AllocWS(256);
-  ReadCalcSettings();
   csm->gui_id=calc_gui_id=create_ed();
 }
 
 void maincsm_onclose(CSM_RAM *csm)
 {
-  WriteCalcSettings();
   FreeWS(ews);
   SUBPROC(kill_elf);
 }
@@ -929,8 +930,7 @@ sizeof(MAIN_CSM),
   }
 };
 
-void UpdateCSMname(void)
-{
+void UpdateCSMname(void) {
   wsprintf((WSHDR *)(&MAINCSM.maincsm_name), "SCalka");
 }
 
@@ -938,6 +938,8 @@ int main()
 {
   MAIN_CSM csm;
   UpdateCSMname();
+  InitConfig();
+  InitSettings();
   LockSched();
   CreateCSM(&MAINCSM.maincsm,&csm,0);
   UnlockSched();

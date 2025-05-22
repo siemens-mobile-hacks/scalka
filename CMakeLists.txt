@@ -4,7 +4,7 @@ include(../sdk/config.cmake)
 project(sieelf_scalka C)
 
 include_directories("../libsie/src/include")
-link_libraries(crt crt_helper gcc c m)
+link_libraries(crt crt_helper gcc c m ft sie)
 file(GLOB_RECURSE SOURCES "src/*.c")
 
 add_executable(SCalka_ELKA ${SOURCES})

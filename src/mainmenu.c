@@ -1,9 +1,9 @@
 #include <swilib.h>
 #include <string.h>
+#include "settings.h"
 #include "mainmenu.h"
-#include "edit_settings.h"
 
-extern volatile int calc_gui_id;;
+extern volatile int calc_gui_id;
 extern CALC_SETTINGS calc_set;
 extern double d_answer;
 
@@ -26,10 +26,14 @@ static void mm_ans2y(GUI *gui)
   GeneralFuncF1(1);
 }
 
-static void mm_settings(GUI *gui)
-{
-  CreateSettingsEdit();
-  GeneralFuncF1(1);
+static void mm_settings(GUI *gui) {
+    extern char CFG_PATH[];
+    WSHDR ws;
+    uint16_t wsbody[128];
+    CreateLocalWS(&ws, wsbody, 127);
+    str_2ws(&ws, CFG_PATH, 127);
+    ExecuteFile(&ws, NULL, NULL);
+    GeneralFuncF1(1);
 }
 
 static void mm_exit(GUI *gui)
