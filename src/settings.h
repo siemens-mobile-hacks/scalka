@@ -14,4 +14,6 @@ typedef struct {
     char auto_recalc;
 } CALC_SETTINGS;
 
+extern CALC_SETTINGS SETTINGS;
+
 void InitSettings();

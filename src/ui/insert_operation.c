@@ -12,8 +12,6 @@ typedef struct {
     UI_DATA *ui_data;
 } INSERT_OPERATION_DATA;
 
-extern CALC_SETTINGS SETTINGS;
-
 static void OnRedraw(GUI *) {
     GUI *gui = GetTopGUI();
     INSERT_OPERATION_DATA *data = GetPopupUserPointer(gui);
@@ -85,6 +83,7 @@ static void GHook(GUI *gui, int cmd) {
         data->ws = AllocWS(16);
     } else if (cmd == TI_CMD_DESTROY) {
         FreeWS(data->ws);
+        mfree(data);
     }
 }
 
@@ -99,7 +98,7 @@ const POPUP_DESC POPUP_D = {
     LGP_NULL,
     NULL,
     0,
-    FONT_SMALL,
+    FONT_MEDIUM,
     101,
     0,
 };

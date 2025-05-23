@@ -8,9 +8,6 @@
 
 #define ITEMS_N 5
 
-extern double D_ANSWER;
-extern CALC_SETTINGS SETTINGS;
-
 static HEADER_DESC HEADER_D = {{0, 0, 0, 0},NULL, (int)LGP_OPTIONS, LGP_NULL};
 
 static const int SOFTKEYS[] = {SET_LEFT_SOFTKEY, SET_RIGHT_SOFTKEY, SET_MIDDLE_SOFTKEY};

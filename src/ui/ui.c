@@ -14,11 +14,6 @@
 #include "menu_options.h"
 #include "insert_operation.h"
 
-extern double D_ANSWER;
-extern int OP_LEN, OP_POS;
-extern char OPERATION[256];
-extern CALC_SETTINGS SETTINGS;
-
 static int ICON[] = {ICON_CALCULATOR};
 
 static HEADER_DESC HEADER_D = {{0, 0, 0, 0}, ICON, (int)LGP_CALCULATOR, LGP_NULL};
@@ -91,10 +86,7 @@ void GHook(GUI *gui, int cmd) {
     UI_DATA *data= EDIT_GetUserPointer(gui);
 
     static SOFTKEY_DESC SK_DEL = {0x0FFE, 0x0FFE, 3272};
-    if (cmd == TI_CMD_CREATE) {
-        OP_LEN = 0;
-        EDIT_SetFocus(gui, 4);
-    } else if (cmd == TI_CMD_REDRAW) {
+    if (cmd == TI_CMD_REDRAW) {
         WSHDR ws;
         uint16_t wsbody[256];
         CreateLocalWS(&ws, wsbody, 255);
@@ -138,6 +130,10 @@ void GHook(GUI *gui, int cmd) {
             EDIT_SetTextToEditControl(gui, 2, &ws);
             data->req_recalc = 0;
         }
+    } else if (cmd == TI_CMD_CREATE) {
+        EDIT_SetFocus(gui, 4);
+    } else if (cmd == TI_CMD_DESTROY) {
+        mfree(data);
     }
 }
 
@@ -149,7 +145,7 @@ static INPUTDIA_DESC INPUTDIA_D = {
     0,
     &SOFTKEYS,
     {0, 0, 0, 0},
-    4,
+    FONT_MEDIUM,
     100,
     101,
     0,
@@ -180,7 +176,7 @@ int CreateUI(void) {
     ConstructEditControl(&ec, ECT_HEADER, ECF_APPEND_EOL, &ws, 31);
     AddEditControlToEditQend(eq, &ec, malloc);
 
-    ConstructEditControl(&ec, ECT_NORMAL_TEXT, ECF_APPEND_EOL, 0, 128);
+    ConstructEditControl(&ec, ECT_READ_ONLY, ECF_APPEND_EOL, 0, 128);
     AddEditControlToEditQend(eq, &ec, malloc);
 
     wsprintf(&ws, "%s", "----------");

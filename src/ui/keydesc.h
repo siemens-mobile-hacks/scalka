@@ -1,4 +1,6 @@
-static const char *const KEY_DESC[4][12] = {
+#pragma once
+
+static const char *const KEY_DESC[][12] = {
     {
         "1", "2", "3",
         "4", "5", "6",
