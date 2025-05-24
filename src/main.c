@@ -1,7 +1,6 @@
 #include <swilib.h>
 #include <string.h>
 #include "ui/ui.h"
-#include "ui/lgp.h"
 #include "settings.h"
 #include "conf_loader.h"
 

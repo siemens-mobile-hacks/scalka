@@ -3,7 +3,6 @@
 #include "../settings.h"
 #include "../operation.h"
 #include "ui.h"
-#include "lgp.h"
 #include "icons.h"
 
 #define ITEMS_N 5

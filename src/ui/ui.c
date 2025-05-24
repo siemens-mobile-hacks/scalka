@@ -1,14 +1,9 @@
-#include "ui.h"
-
-#include <locale.h>
 #include <swilib.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>
-
 #include "../operation.h"
 #include "../settings.h"
-#include "lgp.h"
 #include "icons.h"
 #include "keydesc.h"
 #include "menu_options.h"
