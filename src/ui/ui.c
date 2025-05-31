@@ -11,11 +11,11 @@
 
 static int ICON[] = {ICON_CALCULATOR};
 
-static HEADER_DESC HEADER_D = {{0, 0, 0, 0}, ICON, (int)LGP_CALCULATOR, LGP_NULL};
+static HEADER_DESC HEADER_D = {{0, 0, 0, 0}, ICON, (int)"Calculator", LGP_NULL};
 
 static SOFTKEY_DESC SOFTKEYS_D[] = {
-    {0x0018, 0x0000, LGP_OPTIONS},
-    {0x0001, 0x0000, LGP_EXIT},
+    {0x0018, 0x0000, (int)"Options"},
+    {0x0001, 0x0000, (int)"Exit"},
     {0x003D, 0x0000, (int)LGP_DOIT_PIC}
 };
 
@@ -167,7 +167,7 @@ int CreateUI(void) {
     PrepareEditControl(&ec);
     void* eq = AllocEQueue(malloc, mfree_adr());
 
-    wsprintf(&ws, "%t:", LGP_RESULT);
+    wsprintf(&ws, "%t:", "Result:");
     ConstructEditControl(&ec, ECT_HEADER, ECF_APPEND_EOL, &ws, 31);
     AddEditControlToEditQend(eq, &ec, malloc);
 

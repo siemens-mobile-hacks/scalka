@@ -67,7 +67,7 @@ const struct {
 };
 
 void UpdateCSMname(void) {
-    wsprintf((WSHDR *)(&MAINCSM.maincsm_name), "%t", LGP_CALCULATOR);
+    wsprintf((WSHDR *)(&MAINCSM.maincsm_name), "%t", "Calculator");
 }
 
 int main() {

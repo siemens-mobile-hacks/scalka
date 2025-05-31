@@ -7,13 +7,13 @@
 
 #define ITEMS_N 5
 
-static HEADER_DESC HEADER_D = {{0, 0, 0, 0},NULL, (int)LGP_OPTIONS, LGP_NULL};
+static HEADER_DESC HEADER_D = {{0, 0, 0, 0},NULL, (int)"Options", LGP_NULL};
 
 static const int SOFTKEYS[] = {SET_LEFT_SOFTKEY, SET_RIGHT_SOFTKEY, SET_MIDDLE_SOFTKEY};
 
 static const SOFTKEY_DESC SOFTKEYS_D[]= {
-    {0x0018,0x0000,(int)LGP_SELECT},
-    {0x0001,0x0000,(int)LGP_BACK},
+    {0x0018,0x0000,(int)"Select"},
+    {0x0001,0x0000,(int)"Back"},
     {0x003D,0x0000,(int)LGP_DOIT_PIC}
 };
 
@@ -60,8 +60,8 @@ static MENUITEM_DESC ITEMS[ITEMS_N] = {
     {ICON, (int)"AC", LGP_NULL, 0, NULL, MENU_FLAG3, MENU_FLAG2},
     {ICON, (int)"ANS->X", LGP_NULL, 0, NULL, MENU_FLAG3, MENU_FLAG2},
     {ICON, (int)"ANS->Y", LGP_NULL, 0, NULL, MENU_FLAG3, MENU_FLAG2},
-    {ICON, (int)LGP_SETTINGS, LGP_NULL, 0, NULL, MENU_FLAG3, MENU_FLAG2},
-    {ICON, (int)LGP_EXIT, LGP_NULL, 0, NULL, MENU_FLAG3, MENU_FLAG2}
+    {ICON, (int)"Settings", LGP_NULL, 0, NULL, MENU_FLAG3, MENU_FLAG2},
+    {ICON, (int)"Exit", LGP_NULL, 0, NULL, MENU_FLAG3, MENU_FLAG2}
 };
 
 static const MENUPROCS_DESC PROCS[ITEMS_N] =  {
