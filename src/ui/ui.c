@@ -167,7 +167,7 @@ int CreateUI(void) {
     PrepareEditControl(&ec);
     void* eq = AllocEQueue(malloc, mfree_adr());
 
-    wsprintf(&ws, "%t:", "Result:");
+    wsprintf(&ws, "%t:", "Result");
     ConstructEditControl(&ec, ECT_HEADER, ECF_APPEND_EOL, &ws, 31);
     AddEditControlToEditQend(eq, &ec, malloc);
 
